@@ -1,0 +1,6 @@
+{
+  "name": "Secure Transcript System",
+  "description": "Secure access system for academic transcripts using access codes and date-of-birth verification.",
+  "requestFramePermissions": [],
+  "majorCapabilities": []
+}
