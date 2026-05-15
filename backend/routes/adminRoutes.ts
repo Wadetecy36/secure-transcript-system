@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import multer from 'multer';
-import { uploadTranscript, getAuditLogs, exportAuditLogs, getAdminStats, getUsers, updateUser, deleteUser } from '../controllers/adminController.ts';
+import { uploadTranscript, getAuditLogs, exportAuditLogs, getAdminStats, getUsers, updateUser, deleteUser, approveUser } from '../controllers/adminController.ts';
 import { authenticateToken, requireStaff, requireAdmin } from '../middleware/authMiddleware.ts';
 
 const router = Router();
@@ -16,5 +16,5 @@ router.get('/stats', authenticateToken, requireAdmin, getAdminStats);
 router.get('/users', authenticateToken, requireAdmin, getUsers);
 router.patch('/users/:id', authenticateToken, requireAdmin, updateUser);
 router.delete('/users/:id', authenticateToken, requireAdmin, deleteUser);
-
+router.post('/users/:id/approve', authenticateToken, requireAdmin, approveUser);
 export default router;

@@ -189,3 +189,37 @@ export const deleteUser = async (req: AuthRequest, res: Response) => {
     res.status(500).json({ error: 'Failed to delete user' });
   }
 };
+export const approveUser = async (req: AuthRequest, res: Response) => {
+  const { id } = req.params;
+
+  try {
+    const user = db.prepare('SELECT id, fullName, approved FROM users WHERE id = ?').get(id) as any;
+    
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    if (user.approved === 1) {
+      return res.status(400).json({ error: 'User is already approved' });
+    }
+
+    db.prepare('UPDATE users SET approved = 1 WHERE id = ?').run(id);
+
+    logAudit({
+      userId: req.user?.userId,
+      action: 'SYSTEM' as any,
+      resourceType: 'USER',
+      resourceId: id,
+      details: { action: 'APPROVE_USER' },
+      req
+    });
+
+    res.json({ 
+      message: 'User approved successfully',
+      userId: id 
+    });
+  } catch (error) {
+    console.error('Approve User Error:', error);
+    res.status(500).json({ error: 'Failed to approve user' });
+  }
+};
